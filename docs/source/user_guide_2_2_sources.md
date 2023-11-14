@@ -180,6 +180,42 @@ See all test019 as examples.
 2) train GAN
 3) use GAN as source ; compare to reference
 
+### Spectral sources 
+
+You can provide an energy spectrum instead of a fixed energy by setting the following to ``"histogram"`` or ``"spectrum_lines"`` for ``"spectrum_lines"`` the source will be polyenergetic but with a discrete number of photopeaks (if this is gamma) given by the two arrays: energy and weight. You can also use ``"histogram"``, also with the two arrays, for a continuous energy distribution.
+
+```python
+source.energy.type = "histogram" # "histogram", "spectrum_lines", "mono", "gauss", "range" etc.
+```
+
+and providing energies and weights as
+
+```python
+source.energy.histogram_weight = w
+source.energy.histogram_energy = en
+```
+
+or for ``"spectrum_lines"``:
+
+```python
+source.energy.spectrum_weight = w
+source.energy.spectrum_energy = en
+```
+
+Where the weights and energies are specified as arrays. To generate the weights and energies, a convenient python module is [spekpy](https://bitbucket.org/spekpy/spekpy_release/wiki/Home) (R Bujila, A Omar and G Poludniowski, A validation of SpekPy: a software toolkit for modelling x-ray tube spectra. Phys Med. 2020; 75:44-54.). Spekpy is installed through cloning the repository and installing via ``python setup.py install`` or similar in the cloned directory. A sample of a spekpy spectrum could look like this
+
+```python
+import spekpy as sp
+s = sp.Spek(120,14) # 120 kVp with 14 degree anode
+w, en = spectrum.get_spectra()
+
+for ii, value in enumerate(en):
+    en[ii] = value * keV
+
+source.energy.type = "histogram"
+source.energy.histogram_weight = w
+source.energy.histogram_energy = en
+```
 
 ### Pencil Beam sources
 
